@@ -22,6 +22,7 @@ typedef struct halo
   float vrms;
   int HID;
   float redshift;
+  float env_percentile;
 } hostDMH;
 
 typedef struct HODgal
@@ -43,7 +44,7 @@ typedef struct _halo_metadata
   float percentile;
 } halo_metadata;
 
-void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_env, double del_gamma, double f_cen, double alpha_cen, double alpha_sat, unsigned long int seed, double Omega_m0, double Lbox, char *input_fname, char *output_fname, char *env_fname);
+void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double del_gamma, double A_con, double f_cen, double alpha_cen, double alpha_sat, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname);
 double NFW_CDF_sampler(float * restrict CDF, gsl_rng *r);
 
 void* read_halo_hdf5(char infile[],char dataset_name[],size_t *len);
