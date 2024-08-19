@@ -32,8 +32,7 @@ void* read_halo_hdf5(char filename[], char dataset_name[], size_t *len) {
   H5Tinsert(halo_tid, "vy", HOFFSET(hostDMH,vy), H5T_NATIVE_FLOAT);
   H5Tinsert(halo_tid, "vz", HOFFSET(hostDMH,vz), H5T_NATIVE_FLOAT);
   H5Tinsert(halo_tid, "vrms", HOFFSET(hostDMH,vrms), H5T_NATIVE_FLOAT);
-  H5Tinsert(halo_tid, "gid", HOFFSET(hostDMH,HID), H5T_NATIVE_INT);
-  H5Tinsert(halo_tid, "redshift", HOFFSET(hostDMH,redshift), H5T_NATIVE_FLOAT);  
+  H5Tinsert(halo_tid, "gid", HOFFSET(hostDMH,HID), H5T_NATIVE_INT); 
 
   if (H5Dread(dataset, halo_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, data) < 0) {
     H5Eprint(H5E_DEFAULT, stderr);
