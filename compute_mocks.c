@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
   halo_file = malloc(halo_file_ssize);
   output_file = malloc(output_file_ssize);
   env_file = malloc(env_file_ssize);
-  snprintf(halo_file, halo_file_ssize, "%s", argv[14]);
-  snprintf(output_file, output_file_ssize, "%s", argv[15]);
-  snprintf(env_file, env_file_ssize, "%s", argv[16]);
+  snprintf(halo_file, halo_file_ssize, "%s", argv[17]);
+  snprintf(output_file, output_file_ssize, "%s", argv[18]);
+  snprintf(env_file, env_file_ssize, "%s", argv[19]);
 
   fprintf(stderr,"Computing HOD from %s\n", halo_file);
   fprintf(stderr,"Reading environment density from %s\n", env_file);
