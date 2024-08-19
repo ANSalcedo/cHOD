@@ -6,23 +6,23 @@
 #define G 6.672e-8 /*Universal Gravitational Constant in cgs units*/
 #define Hubble 3.2407789e-18 /*Hubble's constant h/sec*/
 #define rho_crit (3.0*pow(Hubble, 2.0) / (8.0 * M_PI * G)) * (pow(Mpc_to_cm, 3.0) / Msun_to_g) /*Cosmological Critical Density in Msun h^2 / Mpc^3 */
-#define INDEX9(i,j) (i*9 + j)
+#define INDEX10(i,j) (i*10 + j)
 
 /* These functions populate halos with HOD galaxies from an HDF5 halo catalog */
 /* The outputs specify galaxy positions, and velocities (host mass and satellite/central identification have been dropped for speed and space considerations) */
 
-hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double siglogM, double logMmin, double q_env, double alpha_cen, unsigned long int N_h, unsigned long int *Ncen, gsl_rng *r)
+hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double siglogM, double logMmin, double q_cen, double alpha_cen, double redshift, unsigned long int N_h, unsigned long int *Ncen, gsl_rng *r)
 {
   /*This function uses the Zehavi 2011 prescription to find the halos that host central galaxies*/
 
-  float * hosts = malloc(N_h * 9 * sizeof(float));
+  float * hosts = malloc(N_h * 10 * sizeof(float));
   int * IDs = malloc(N_h * sizeof(int));
   int i;
   unsigned long j = 0;
 
   float f_logMmin_0 = (float)logMmin;
   float f_siglogM = (float)siglogM;
-  float f_q_env = (float)q_env;
+  float f_q_cen = (float)q_cen;
 
   for(i = 0; i < N_h; i++)
     {
@@ -31,22 +31,23 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
       double vrms = halos[i].vrms;
 	      
       /* compute modified logMmin for this halo's environment */
-      float f_logMmin = f_logMmin_0 + f_q_env * (env_rank - 0.5f);
+      float f_logMmin = f_logMmin_0 + f_q_cen * (env_rank - 0.5f);
 
       /*Mean central occupation or the probability of hosting a central*/
       float prob = 0.5 * (1.0 + erf( (logM - f_logMmin) / f_siglogM) );
 
       if(prob > gsl_rng_uniform(r))
 	{
-	  hosts[INDEX9(j,0)] = halos[i].X;
-	  hosts[INDEX9(j,1)] = halos[i].Y;
-	  hosts[INDEX9(j,2)] = halos[i].Z;
-	  hosts[INDEX9(j,3)] = halos[i].vx + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0)); 
-	  hosts[INDEX9(j,4)] = halos[i].vy + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0));
-	  hosts[INDEX9(j,5)] = halos[i].vz + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0));
-	  hosts[INDEX9(j,6)] = halos[i].mass;
-	  hosts[INDEX9(j,7)] = vrms;
-	  hosts[INDEX9(i,8)]= halos[i].redshift;
+	  hosts[INDEX10(j,0)] = halos[i].X;
+	  hosts[INDEX10(j,1)] = halos[i].Y;
+	  hosts[INDEX10(j,2)] = halos[i].Z;
+	  hosts[INDEX10(j,3)] = halos[i].vx + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0)); 
+	  hosts[INDEX10(j,4)] = halos[i].vy + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0));
+	  hosts[INDEX10(j,5)] = halos[i].vz + gsl_ran_laplace(r, alpha_cen*vrms*pow(2, -1.0/2.0));
+	  hosts[INDEX10(j,6)] = halos[i].mass;
+	  hosts[INDEX10(j,7)] = vrms;
+	  hosts[INDEX10(i,8)] = redshift;
+	  hosts[INDEX10(i,9)] = env[i].percentile; 
 	  IDs[j] = halos[i].HID;
 	  j ++;
 	}
@@ -58,22 +59,23 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
 
   for(i=0;i<j;i++)
     {
-      host_coords[i].X = hosts[INDEX9(i,0)];
-      host_coords[i].Y = hosts[INDEX9(i,1)];
-      host_coords[i].Z = hosts[INDEX9(i,2)];
-      host_coords[i].vx = hosts[INDEX9(i,3)];
-      host_coords[i].vy = hosts[INDEX9(i,4)];
-      host_coords[i].vz = hosts[INDEX9(i,5)];
-      host_coords[i].mass = hosts[INDEX9(i,6)];
-      host_coords[i].vrms = hosts[INDEX9(i,7)];
-      host_coords[i].redshift = hosts[INDEX9(i,8)];
+      host_coords[i].X              = hosts[INDEX10(i,0)];
+      host_coords[i].Y              = hosts[INDEX10(i,1)];
+      host_coords[i].Z              = hosts[INDEX10(i,2)];
+      host_coords[i].vx             = hosts[INDEX10(i,3)];
+      host_coords[i].vy             = hosts[INDEX10(i,4)];
+      host_coords[i].vz             = hosts[INDEX10(i,5)];
+      host_coords[i].mass           = hosts[INDEX10(i,6)];
+      host_coords[i].vrms           = hosts[INDEX10(i,7)];
+      host_coords[i].redshift       = hosts[INDEX10(i,8)];
+      host_coords[i].env_percentile = hosts[INDEX10(i,9)];
       host_coords[i].HID = IDs[i];
     }
 
   return host_coords; 
 }
 
-int * find_satellites(struct halo halos[], double siglogM, double logMmin, double logM0, double logM1, double alpha, unsigned long int N_h, unsigned long int *Nsat, gsl_rng *r)
+int * find_satellites(struct halo halos[], double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_sat, unsigned long int N_h, unsigned long int *Nsat, gsl_rng *r)
 {
   /*This function determines how many satellite galaxies each halo has using the same Zehavi 2011 prescription*/
 
@@ -83,8 +85,11 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
 
   for(i=0; i < N_h; i++) 
     {
+      double env_rank = (double)halos[i].env_percentile;	  
       double M0 = pow(10.0, logM0);
-      double M1 = pow(10.0, logM1);
+      double logM1_init = logM1;
+      double f_logM1 = logM1_init + q_sat * (env_rank - 0.5f);
+      double M1 = pow(10.0, f_logM1);
       
       float logM = log10(halos[i].mass); //Come back to this once hdf5 is figured out
       /* double mean_cen = 0.5 * (1.0 + erf( (logM - logMmin) / siglogM) ); */
@@ -108,7 +113,7 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
   return satellites;
 }
 
-galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat, double O_m0, double del_gamma, gsl_rng *r)
+galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat, double O_m0, double del_gamma, double A_con, gsl_rng *r)
 {
   /* This function determines the spatial distribution of the satellite galaxies */
   /* Galaxies are NFW-distributed using results from Correa et al. 2015 */
@@ -126,7 +131,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   double logM = log10(host.mass), x0 = host.X, y0 = host.Y, z0 = host.Z, vx0 = host.vx, vy0 = host.vy, vz0 = host.vz, vrms = host.vrms;
   int HID = host.HID;
   double exponent = alpha + beta*logM*(1.0 + gamma*pow(logM, 2.0)); /* Fit from Correa et al. 2015 */
-  double cvir = sqrt(2.0)*pow(10.0, exponent); /* Approximate factor to rescale Rvir between crit, matter */
+  double cvir = A_con * sqrt(2.0)*pow(10.0, exponent); /* Approximate factor to rescale Rvir between crit, matter */
   double R_vir = pow((3.0/4.0)*(1.0/M_PI)*(host.mass/(D_vir*rho_u)), 1.0/3.0);
   
   int j;
@@ -177,7 +182,7 @@ inline double wrap_periodic(double x, double Lbox)
   }
 }
 
-void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_env, double del_gamma, double f_cen, double alpha_cen, double alpha_sat, unsigned long int seed, double Omega_m0, double Lbox, char *input_fname, char *output_fname, char *env_fname)
+void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double A_con, double del_gamma, double f_cen, double alpha_cen, double alpha_sat, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname)
 {
   herr_t status;
   size_t NumData,i;
@@ -206,7 +211,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   /* compute HOD parameters from number density, mass function, environment density */  
 	
   hostDMH *cenhalos; //Central Coordinates
-  cenhalos = find_galaxy_hosts(data, env, siglogM, logMmin, q_env, alpha_cen, NumData, &Ncen, r);
+  cenhalos = find_galaxy_hosts(data, env, siglogM, logMmin, q_cen, alpha_cen, redshift, NumData, &Ncen, r);
   galaxy * cens = malloc(Ncen*sizeof(galaxy));
 	
   for(i=0; i<Ncen; i++){
@@ -225,7 +230,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   }
 
   int *sats; //Number of Satellites for each halo
-  sats = find_satellites(cenhalos, siglogM, logMmin, logM0, logM1, alpha, Ncen, &Nsat, r);
+  sats = find_satellites(cenhalos, siglogM, logMmin, logM0, logM1, alpha, q_sat, Ncen, &Nsat, r);
   galaxy * coords  = malloc(Nsat*sizeof(galaxy)); //Satellite Coordinates
   int j,k,l=0;
 
@@ -233,7 +238,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   {
     if(sats[j]>0){
       galaxy * halosats = malloc(sats[j] * sizeof(galaxy));
-      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat, Omega_m0, del_gamma, r);
+      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat, Omega_m0, del_gamma, A_con, r);
       for(k=0; k<sats[j]; k++)
 	{
 	  coords[l].X = wrap_periodic(halosats[k].X,Lbox);
