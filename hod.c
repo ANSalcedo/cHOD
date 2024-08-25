@@ -23,7 +23,8 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
   float f_logMmin_0 = (float)logMmin;
   float f_siglogM = (float)siglogM;
   float f_q_cen = (float)q_cen;
-
+	
+  #pragma omp parallel for
   for(i = 0; i < N_h; i++)
     {
       float logM = (float)log10(halos[i].mass);
@@ -83,6 +84,7 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
   unsigned long j =0;
   int * satellites = malloc(N_h*sizeof(int));
 
+  #pragma omp parallel for
   for(i=0; i < N_h; i++) 
     {
       double env_rank = (double)halos[i].env_percentile;	  
@@ -143,8 +145,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   /* double prefac = 1.0 / ( log( 1.0 + cvir ) - (cvir / ( 1.0 + cvir )) ); */ /* Prefactor 1/A(c_vir) */
   float f_c_vir = (float)cvir;
 
-#pragma simd
-  for(i=0; i<1000; i++)
+ for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
       /* CDF[i] = prefac * ( log( 1.0 + x * f_c_vir ) - (x * f_c_vir / ( 1.0 + x*f_c_vir )) ); */ 
@@ -234,6 +235,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   galaxy * coords  = malloc(Nsat*sizeof(galaxy)); //Satellite Coordinates
   int j,k,l=0;
 
+  #pragma omp parallel for
   for(j=0;j<Ncen;j++)
   {
     if(sats[j]>0){
