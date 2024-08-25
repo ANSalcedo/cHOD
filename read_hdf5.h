@@ -6,6 +6,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_sf.h>
 #include <time.h>
+#include <omp.h>
 
 #include "hdf5.h"
 #include "hdf5_hl.h"
