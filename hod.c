@@ -149,7 +149,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
     {
       float x = (float)i / 1000.0;
       /* CDF[i] = prefac * ( log( 1.0 + x * f_c_vir ) - (x * f_c_vir / ( 1.0 + x*f_c_vir )) ); */ 
-      CDF[i] = prefac * pow( x, (2.0 + del_gamma) ) * ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, x*cvir/(x*cvir + 1.0)) ) / (1 + cvir*x);
+      CDF[i] = prefac * pow( x, (2.0 + del_gamma) ) * ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, x*f_c_vir/(x*f_c_vir + 1.0)) ) / (1 + f_c_vir*x);
     }
   
   for(j=0; j<N_sat; j++)
