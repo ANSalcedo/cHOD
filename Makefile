@@ -4,7 +4,7 @@
 HDF5_C_INCLUDE=-I /apps/python/3.6-conda5.2/include
 HDF5_C_LIBS=-L /apps/python/3.6-conda5.2/lib -lpthread -lssl -lcrypto -lz -lm -lhdf5 -lhdf5_hl
 
-CC = icc
+CC = icx
 CFLAGS = -Wall -O3 -ipo -qopenmp -std=c99
 INCLDIRS = $(HDF5_C_INCLUDE) -I /usr/include -I ../
 LFLAGS = $(HDF5_C_LIBS) -lgsl -lgslcblas # -lsvml
@@ -25,5 +25,3 @@ $(OBJECTS): $(HEADERS) Makefile
 
 clean:
 	rm -f $(EXEC) *~ $(OBJECTS)
-
-

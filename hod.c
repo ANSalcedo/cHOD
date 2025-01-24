@@ -145,7 +145,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   /* double prefac = 1.0 / ( log( 1.0 + cvir ) - (cvir / ( 1.0 + cvir )) ); */ /* Prefactor 1/A(c_vir) */
   float f_c_vir = (float)cvir;
 	
- #pragma simd
+ #pragma omp simd
  for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
