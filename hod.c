@@ -90,7 +90,8 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
       double env_rank = (double)halos[i].env_percentile;	  
       double M0 = pow(10.0, logM0);
       double logM1_init = logM1;
-      double f_logM1 = logM1_init + q_sat * (env_rank - 0.5f);
+      float f_q_sat = (float)q_sat;
+      double f_logM1 = logM1_init + f_q_sat * (env_rank - 0.5f);
       double M1 = pow(10.0, f_logM1);
       
       float logM = log10(halos[i].mass); //Come back to this once hdf5 is figured out
