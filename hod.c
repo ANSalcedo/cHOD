@@ -169,6 +169,8 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
       coords[j].vz = vz0 + alpha_sat*vrms*gsl_ran_gaussian(r, 1.0);
       coords[j].cen_flag = 1; /*cen/sat flag, 1 for satellite*/
       coords[j].host_id = HID;
+      coords[j].env_percentile = host.env_percentile;
+      coords[j].host_mass = host.mass;
     }
 
   return coords;
@@ -228,6 +230,8 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
       cens[fNcen].vz = cenhalos[i].vz;
       cens[fNcen].cen_flag = 0; /*zero identifies as central */
       cens[fNcen].host_id = cenhalos[i].HID;
+      cens[fNcen].host_mass = cenhalos[i].mass;
+      cens[fNcen].env_percentile = cenhalos[i].env_percentile;
       fNcen ++;
     }
   }
@@ -253,6 +257,8 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
 	  coords[l].vz = halosats[k].vz;
 	  coords[l].cen_flag = 1; /*one identifies as sat*/
  	  coords[l].host_id = halosats[k].host_id;
+	  coords[l].host_mass = halosats[k].host_mass;
+	  coords[l].env_percentile = halosats[k].env_percentile;
 	  l++;
 	}
       free(halosats);
@@ -275,7 +281,9 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
       HODgals[i].vy = cens[i].vy;	 
       HODgals[i].vz = cens[i].vz;
       HODgals[i].cen_flag = (int) cens[i].cen_flag;
-      HODgals[i].host_id = (int) cens[i].host_id;	  
+      HODgals[i].host_id = (int) cens[i].host_id;	
+      HODgals[i].env_percentile = cens[i].env_percentile;
+      HODgals[i].host_mass = cens[i].host_mass;
     }
   free(cens);
   
@@ -288,7 +296,9 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
     HODgals[i+fNcen].vy = coords[i].vy;	 
     HODgals[i+fNcen].vz = coords[i].vz;
     HODgals[i+fNcen].cen_flag = (int) coords[i].cen_flag;
-    HODgals[i+fNcen].host_id = (int) coords[i].host_id;	  
+    HODgals[i+fNcen].host_id = (int) coords[i].host_id;
+    HODgals[i+fNcen].env_percentile = coords[i].env_percentile;
+    HODgals[i+fNcen].host_mass = coords[i].host_mass;	  
   }
   free(coords);
 
