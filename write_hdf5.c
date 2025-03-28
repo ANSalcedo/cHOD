@@ -40,7 +40,7 @@ herr_t write_gal_hdf5(char filename[], char dataset_name[], size_t len, galaxy* 
   status = H5Tinsert(filetype, "cen_flag", offset, H5T_STD_I32BE);
   offset += int_size_on_disk;
   status = H5Tinsert(filetype, "host_id", offset, H5T_STD_I32BE);
-  offset += float_size_on_disk;
+  offset += int_size_on_disk;
   status = H5Tinsert(filetype, "host_mass", offset, H5T_IEEE_F32BE);
   offset += float_size_on_disk;
   status = H5Tinsert(filetype, "env_percentile", offset, H5T_IEEE_F32BE);
