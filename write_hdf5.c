@@ -18,11 +18,13 @@ herr_t write_gal_hdf5(char filename[], char dataset_name[], size_t len, galaxy* 
   status = H5Tinsert(memtype, "vz", HOFFSET(galaxy,vz), H5T_NATIVE_FLOAT);
   status = H5Tinsert(memtype, "cen_flag", HOFFSET(galaxy,cen_flag), H5T_NATIVE_INT);
   status = H5Tinsert(memtype, "host_id", HOFFSET(galaxy,host_id), H5T_NATIVE_INT);
+  status = H5Tinsert(memtype, "host_mass", HOFFSET(galaxy,host_id), H5T_NATIVE_INT);
+  status = H5Tinsert(memtype, "env_percentile", HOFFSET(galaxy,host_id), H5T_NATIVE_INT);
 
   size_t float_size_on_disk = H5Tget_size(H5T_IEEE_F32BE); // single precision
   size_t int_size_on_disk = H5Tget_size(H5T_STD_I32BE); //integer
   size_t offset = 0;
-  filetype = H5Tcreate(H5T_COMPOUND, 6*float_size_on_disk+2*int_size_on_disk);
+  filetype = H5Tcreate(H5T_COMPOUND, 8*float_size_on_disk+2*int_size_on_disk);
   status = H5Tinsert(filetype, "x", offset, H5T_IEEE_F32BE);
   offset += float_size_on_disk;
   status = H5Tinsert(filetype, "y", offset, H5T_IEEE_F32BE);
@@ -38,6 +40,10 @@ herr_t write_gal_hdf5(char filename[], char dataset_name[], size_t len, galaxy* 
   status = H5Tinsert(filetype, "cen_flag", offset, H5T_STD_I32BE);
   offset += int_size_on_disk;
   status = H5Tinsert(filetype, "host_id", offset, H5T_STD_I32BE);
+  offset += float_size_on_disk;
+  status = H5Tinsert(filetype, "host_mass", offset, H5T_IEEE_F32BE);
+  offset += float_size_on_disk;
+  status = H5Tinsert(filetype, "env_percentile", offset, H5T_IEEE_F32BE);
 
   space = H5Screate_simple(1, dims, NULL);
   dataset = H5Dcreate(file_id, dataset_name, filetype, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
