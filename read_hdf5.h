@@ -36,6 +36,7 @@ typedef struct HODgal
   float vz;
   int cen_flag;
   int host_id;
+  float host_mass;
 } galaxy;
 
 typedef struct _halo_metadata
