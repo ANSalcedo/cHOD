@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-  if(argc != 20) {
+  if(argc != 22) {
     printf("%d usage: ./compute_mocks Omega_m0 redshift siglogM logMmin logM0 logM1 alpha q_cen q_sat del_gamma A_con f_cen alpha_cen alpha_sat_l alpha_sat_h M_pivot_as boxsize seed [halo catalog file] [galaxy mock file] [halo environment file]\n",argc);
     return -1;
   }
