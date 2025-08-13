@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   fprintf(stderr,"Reading environment density from %s\n", env_file);
   fprintf(stderr,"Saving to output file %s\n", output_file);
 
-  populate_hod(siglogM, logMmin, logM0, logM1, alpha, q_cen, q_sat, A_con, del_gamma, f_cen, alpha_cen, alpha_sat_l, alpha_sat_h, M_pivot_as \
+  populate_hod(siglogM, logMmin, logM0, logM1, alpha, q_cen, q_sat, A_con, del_gamma, f_cen, alpha_cen, alpha_sat_l, alpha_sat_h, M_pivot_as, \
 	       seed, Omega_m0, redshift, boxsize, halo_file, output_file, env_file);
 
   return 0;
