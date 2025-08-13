@@ -187,7 +187,7 @@ inline double wrap_periodic(double x, double Lbox)
   }
 }
 
-void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double A_con, double del_gamma, double f_cen, double alpha_cen, double alpha_sat, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname)
+void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double A_con, double del_gamma, double f_cen, double alpha_cen, double alpha_sat_l, double alpha_sat_h, double M_pivot_as, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname)
 {
   herr_t status;
   size_t NumData,i;
@@ -246,7 +246,12 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   {
     if(sats[j]>0){
       galaxy * halosats = malloc(sats[j] * sizeof(galaxy));
-      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat, Omega_m0, del_gamma, A_con, r);
+	  if(cenhalos[j].mass > M_pivot_as){
+      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_h, Omega_m0, del_gamma, A_con, r);
+	  }
+	  else {
+      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_l, Omega_m0, del_gamma, A_con, r);	  
+	  }
       for(k=0; k<sats[j]; k++)
 	{
 	  coords[l].X = wrap_periodic(halosats[k].X,Lbox);
