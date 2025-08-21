@@ -246,12 +246,17 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   {
     if(sats[j]>0){
       galaxy * halosats = malloc(sats[j] * sizeof(galaxy));
-	  if((float)log10(cenhalos[j].mass) > M_pivot_as){
-      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_h, Omega_m0, del_gamma, A_con, r);
+	  float alpha_sat = alpha_sat_l;
+	  if ((float)log10(cenhalos[j].mass) > M_pivot_as){
+      alpha_sat = alpha_sat_h;
 	  }
-	  else {
-      halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_l, Omega_m0, del_gamma, A_con, r);	  
-	  }
+	  halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat, Omega_m0, del_gamma, A_con, r);
+	  //if((float)log10(cenhalos[j].mass) > M_pivot_as){
+      //halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_h, Omega_m0, del_gamma, A_con, r);
+	  //}
+	  //else {
+      //halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_l, Omega_m0, del_gamma, A_con, r);	  
+	  //}
       for(k=0; k<sats[j]; k++)
 	{
 	  coords[l].X = wrap_periodic(halosats[k].X,Lbox);
