@@ -203,6 +203,8 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   T = gsl_rng_default;
   r = gsl_rng_alloc(T);
   gsl_rng_set(r, seed); /* Seeding random distribution */
+
+  printf("Checkpoint 1");
 	
   data = read_halo_hdf5(input_fname,"halos",&NumData);
 
@@ -214,10 +216,14 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   if(!(NumEnv == NumData)) exit(1);
 
   /* compute HOD parameters from number density, mass function, environment density */  
+
+  printf("Checkpoint 2");
 	
   hostDMH *cenhalos; //Central Coordinates
   cenhalos = find_galaxy_hosts(data, env, siglogM, logMmin, q_cen, alpha_cen, redshift, NumData, &Ncen, r);
   galaxy * cens = malloc(Ncen*sizeof(galaxy));
+
+  printf("Checkpoint 3");
 	
   for(i=0; i<Ncen; i++){
     if(gsl_rng_uniform(r) < f_cen)
@@ -236,11 +242,15 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
     }
   }
 
+  printf("Checkpoint 4");
+	
   int *sats; //Number of Satellites for each halo
   sats = find_satellites(cenhalos, siglogM, logMmin, logM0, logM1, alpha, q_sat, Ncen, &Nsat, r);
   galaxy * coords  = malloc(Nsat*sizeof(galaxy)); //Satellite Coordinates
   int j,k,l=0;
 
+  printf("Checkpoint 5");
+	
   /*#pragma omp parallel for*/
   for(j=0;j<Ncen;j++)
   {
@@ -274,7 +284,9 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
       free(halosats);
     }
   }
-  
+
+  printf("Checkpoint 6");
+	
   free(cenhalos);
   free(sats);
 
@@ -312,6 +324,8 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   }
   free(coords);
 
+  printf("Checkpoint 7");
+	
   printf("Satellites Found. Writing to HDF5 file: %s\n", output_fname);
   status = write_gal_hdf5(output_fname, "particles", (size_t)len, HODgals);
   
