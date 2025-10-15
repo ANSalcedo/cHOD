@@ -190,6 +190,7 @@ inline double wrap_periodic(double x, double Lbox)
 void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double A_con, double del_gamma, double f_cen, double alpha_cen, double alpha_sat_l, double alpha_sat_h, double M_pivot_as, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname)
 {
   printf("Checkpoint 0");
+  fflush(stdout);
 	
   herr_t status;
   size_t NumData,i;
@@ -207,6 +208,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   gsl_rng_set(r, seed); /* Seeding random distribution */
 
   printf("Checkpoint 1");
+  fflush(stdout);
 	
   data = read_halo_hdf5(input_fname,"halos",&NumData);
 
@@ -220,12 +222,14 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   /* compute HOD parameters from number density, mass function, environment density */  
 
   printf("Checkpoint 2");
+  fflush(stdout);
 	
   hostDMH *cenhalos; //Central Coordinates
   cenhalos = find_galaxy_hosts(data, env, siglogM, logMmin, q_cen, alpha_cen, redshift, NumData, &Ncen, r);
   galaxy * cens = malloc(Ncen*sizeof(galaxy));
 
   printf("Checkpoint 3");
+  fflush(stdout);
 	
   for(i=0; i<Ncen; i++){
     if(gsl_rng_uniform(r) < f_cen)
@@ -245,6 +249,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   }
 
   printf("Checkpoint 4");
+  fflush(stdout);
 	
   int *sats; //Number of Satellites for each halo
   sats = find_satellites(cenhalos, siglogM, logMmin, logM0, logM1, alpha, q_sat, Ncen, &Nsat, r);
@@ -252,6 +257,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   int j,k,l=0;
 
   printf("Checkpoint 5");
+  fflush(stdout);
 	
   /*#pragma omp parallel for*/
   for(j=0;j<Ncen;j++)
@@ -288,6 +294,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   }
 
   printf("Checkpoint 6");
+  fflush(stdout);
 	
   free(cenhalos);
   free(sats);
@@ -327,6 +334,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   free(coords);
 
   printf("Checkpoint 7");
+  fflush(stdout);
 	
   printf("Satellites Found. Writing to HDF5 file: %s\n", output_fname);
   status = write_gal_hdf5(output_fname, "particles", (size_t)len, HODgals);
