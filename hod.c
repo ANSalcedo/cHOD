@@ -226,6 +226,9 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
 	
   hostDMH *cenhalos; //Central Coordinates
   cenhalos = find_galaxy_hosts(data, env, siglogM, logMmin, q_cen, alpha_cen, redshift, NumData, &Ncen, r);
+  printf("Checkpoint 2A");
+  fflush(stdout);
+
   galaxy * cens = malloc(Ncen*sizeof(galaxy));
 
   printf("Checkpoint 3");
