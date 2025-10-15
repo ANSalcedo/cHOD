@@ -14,15 +14,21 @@
 hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double siglogM, double logMmin, double q_cen, double alpha_cen, double redshift, unsigned long int N_h, unsigned long int *Ncen, gsl_rng *r)
 {
   /*This function uses the Zehavi 2011 prescription to find the halos that host central galaxies*/
-
+  
   float * hosts = malloc(N_h * 10 * sizeof(float));
   int * IDs = malloc(N_h * sizeof(int));
   int i;
   unsigned long j = 0;
 
+  printf("Checkpoint CensA");
+  fflush(stdout);
+	
   float f_logMmin_0 = (float)logMmin;
   float f_siglogM = (float)siglogM;
   float f_q_cen = (float)q_cen;
+
+  printf("Checkpoint CensB");
+  fflush(stdout);
 	
   /*#pragma omp parallel for*/
   for(i = 0; i < N_h; i++)
@@ -58,6 +64,9 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
 
   hostDMH *host_coords = malloc(j*sizeof(hostDMH));
 
+  printf("Checkpoint CensC");
+  fflush(stdout);
+	
   for(i=0;i<j;i++)
     {
       host_coords[i].X              = hosts[INDEX10(i,0)];
