@@ -48,13 +48,13 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
 	  hosts[INDEX10(j,0)] = halos[i].X;
 	  hosts[INDEX10(j,1)] = halos[i].Y;
 	  hosts[INDEX10(j,2)] = halos[i].Z;
-	  hosts[INDEX10(j,3)] = halos[i].vx + gsl_ran_laplace(r, alpha_cen*vrms*pow(6, -1.0/2.0)); /* extra power of root 3 comes from conversion of 3D dispersion to 1D */ 
-	  hosts[INDEX10(j,4)] = halos[i].vy + gsl_ran_laplace(r, alpha_cen*vrms*pow(6, -1.0/2.0));
-	  hosts[INDEX10(j,5)] = halos[i].vz + gsl_ran_laplace(r, alpha_cen*vrms*pow(6, -1.0/2.0));
+	  hosts[INDEX10(j,3)] = halos[i].vx + gsl_ran_laplace(r, alpha_cen*vrms*pow(6.0, -1.0/2.0)); /* extra power of root 3 comes from conversion of 3D dispersion to 1D */ 
+	  hosts[INDEX10(j,4)] = halos[i].vy + gsl_ran_laplace(r, alpha_cen*vrms*pow(6.0, -1.0/2.0));
+	  hosts[INDEX10(j,5)] = halos[i].vz + gsl_ran_laplace(r, alpha_cen*vrms*pow(6.0, -1.0/2.0));
 	  hosts[INDEX10(j,6)] = halos[i].mass;
 	  hosts[INDEX10(j,7)] = vrms;
 	  hosts[INDEX10(i,8)] = redshift;
-	  hosts[INDEX10(i,9)] = env[i].percentile; 
+	  hosts[INDEX10(i,9)] = env_rank; 
 	  IDs[j] = halos[i].HID;
 	  j ++;
 	}
