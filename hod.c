@@ -189,6 +189,8 @@ inline double wrap_periodic(double x, double Lbox)
 
 void populate_hod(double siglogM, double logMmin, double logM0, double logM1, double alpha, double q_cen, double q_sat, double A_con, double del_gamma, double f_cen, double alpha_cen, double alpha_sat_l, double alpha_sat_h, double M_pivot_as, unsigned long int seed, double Omega_m0, double redshift, double Lbox, char *input_fname, char *output_fname, char *env_fname)
 {
+  printf("Checkpoint 0");
+	
   herr_t status;
   size_t NumData,i;
   hostDMH *data;
