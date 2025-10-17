@@ -276,7 +276,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   for(j=0;j<Ncen;j++)
   {
     if(sats[j]>0){
-      galaxy * halosats = malloc(sats[j] * sizeof(galaxy));
+      galaxy * halosats = static malloc(sats[j] * sizeof(galaxy));
 	  float alpha_sat = alpha_sat_l;
 	  if ((float)log10(cenhalos[j].mass) > M_pivot_as){
       alpha_sat = alpha_sat_h;
