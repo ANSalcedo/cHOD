@@ -156,7 +156,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   float f_c_vir = (float)cvir;
 	
  /*#pragma omp simd*/
- #pragma omp parallel for
+ /*#pragma omp parallel for*/
  for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
@@ -272,7 +272,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   printf("Checkpoint 5");
   fflush(stdout);
 	
-  /*#pragma omp parallel for*/
+  #pragma omp parallel for
   for(j=0;j<Ncen;j++)
   {
     if(sats[j]>0){
