@@ -272,7 +272,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   printf("Checkpoint 5");
   fflush(stdout);
 	
-  #pragma omp parallel for private(j, halosats)
+  #pragma omp parallel
   for(j=0;j<Ncen;j++)
   {
     if(sats[j]>0){
@@ -302,6 +302,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
 	  coords[l].env_percentile = halosats[k].env_percentile;
 	  l++;
 	}
+	  #pragma omp barrier
       free(halosats);
     }
   }
