@@ -31,7 +31,7 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
   fflush(stdout);
 	
   //#pragma omp parallel for
-  #pragma omp simd
+  //#pragma omp simd
   for(i = 0; i < N_h; i++)
     {
       float logM = (float)log10(halos[i].mass);
@@ -95,7 +95,7 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
   int * satellites = malloc(N_h*sizeof(int));
 
   //#pragma omp parallel for
-  #pragma omp simd
+  //#pragma omp simd
   for(i=0; i < N_h; i++) 
     {
       double env_rank = (double)halos[i].env_percentile;	  
@@ -159,6 +159,7 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
 	
  /*#pragma omp simd*/
  /*#pragma omp parallel for*/
+ #pragma simd
  for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
@@ -275,15 +276,15 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
   fflush(stdout);
 	
   //#pragma omp parallel
-  #pragma omp simd
+  //#pragma omp simd
   for(j=0;j<Ncen;j++)
   {
     if(sats[j]>0){
       galaxy * halosats = malloc(sats[j] * sizeof(galaxy));
 	  float alpha_sat = alpha_sat_l;
-	  if ((float)log10(cenhalos[j].mass) > M_pivot_as){
-      alpha_sat = alpha_sat_h;
-	  }
+	  //if ((float)log10(cenhalos[j].mass) > M_pivot_as){
+      //alpha_sat = alpha_sat_h;
+	  //}
 	  halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat, Omega_m0, del_gamma, A_con, r);
 	  //if((float)log10(cenhalos[j].mass) > M_pivot_as){
       //halosats = pick_NFW_satellites(cenhalos[j], sats[j], alpha_sat_h, Omega_m0, del_gamma, A_con, r);
@@ -305,7 +306,7 @@ void populate_hod(double siglogM, double logMmin, double logM0, double logM1, do
 	  coords[l].env_percentile = halosats[k].env_percentile;
 	  l++;
 	}
-	  #pragma omp barrier
+	  //#pragma omp barrier
       free(halosats);
     }
   }
