@@ -30,7 +30,7 @@ hostDMH * find_galaxy_hosts(struct halo halos[], halo_metadata * env, double sig
   printf("Checkpoint CensB");
   fflush(stdout);
 	
-  /*#pragma omp parallel for*/
+  #pragma omp parallel for
   for(i = 0; i < N_h; i++)
     {
       float logM = (float)log10(halos[i].mass);
@@ -93,7 +93,7 @@ int * find_satellites(struct halo halos[], double siglogM, double logMmin, doubl
   unsigned long j =0;
   int * satellites = malloc(N_h*sizeof(int));
 
-  /*#pragma omp parallel for*/
+  #pragma omp parallel for
   for(i=0; i < N_h; i++) 
     {
       double env_rank = (double)halos[i].env_percentile;	  
@@ -155,7 +155,8 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   /* double prefac = 1.0 / ( log( 1.0 + cvir ) - (cvir / ( 1.0 + cvir )) ); */ /* Prefactor 1/A(c_vir) */
   float f_c_vir = (float)cvir;
 	
- #pragma omp simd
+ /*#pragma omp simd*/
+ #pragma omp parallel for
  for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
