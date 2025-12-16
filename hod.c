@@ -153,8 +153,9 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
   /* pre-compute NFW profile for this satellite */
   float CDF[1000];
   size_t i;
-  double prefac = (1.0 + cvir) / ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, cvir/(1.0 + cvir)) );
-  /* double prefac = 1.0 / ( log( 1.0 + cvir ) - (cvir / ( 1.0 + cvir )) ); */ /* Prefactor 1/A(c_vir) */
+  /* double prefac = (1.0 + cvir) / ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, cvir/(1.0 + cvir)) ); */
+  /* The hypergeometric functions slow down the code SIGNIFICANTLY, I think because the compiler won't vectorize when they're present. Unless you want to vary del_gamma, do not use the line above. */
+  double prefac = 1.0 / ( log( 1.0 + cvir ) - (cvir / ( 1.0 + cvir )) ); /* Prefactor 1/A(c_vir)*/
   float f_c_vir = (float)cvir;
 	
  /*#pragma omp simd*/
@@ -163,8 +164,8 @@ galaxy * pick_NFW_satellites(struct halo host, const int N_sat, double alpha_sat
  for(i=0; i<1000; i++)
     {
       float x = (float)i / 1000.0;
-      /* CDF[i] = prefac * ( log( 1.0 + x * f_c_vir ) - (x * f_c_vir / ( 1.0 + x*f_c_vir )) ); */ 
-      CDF[i] = prefac * pow( x, (2.0 + del_gamma) ) * ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, x*f_c_vir/(x*f_c_vir + 1.0)) ) / (1 + f_c_vir*x);
+      CDF[i] = prefac * ( log( 1.0 + x * f_c_vir ) - (x * f_c_vir / ( 1.0 + x*f_c_vir )) );
+      /* CDF[i] = prefac * pow( x, (2.0 + del_gamma) ) * ( 2.0 + del_gamma - (1.0 + del_gamma)*gsl_sf_hyperg_2F1(1.0, 1.0, 3.0 + del_gamma, x*f_c_vir/(x*f_c_vir + 1.0)) ) / (1 + f_c_vir*x); */
     }
   
   for(j=0; j<N_sat; j++)
